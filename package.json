@@ -10,14 +10,14 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:archive-browser.helloWorld"
+		"onCommand:archive-browser.extract"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "archive-browser.helloWorld",
-				"title": "Hello World"
+				"command": "archive-browser.extract",
+				"title": "Extract Archive"
 			}
 		]
 	},
