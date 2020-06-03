@@ -8,16 +8,25 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "archive-browser" is now active!');
+	console.log('Archive Browser activated.');
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('archive-browser.helloWorld', () => {
+	let disposable = vscode.commands.registerCommand('archive-browser.extract', () => {
 		// The code you place here will be executed every time your command is executed
+		let prompt_config: vscode.InputBoxOptions = { // Struct for managing input box.
+			prompt: "Enter a path to an archive file for extraction."
+		};
+		vscode.window.showInputBox(prompt_config).then(path => {
+			if (!path) { // No input; get out
+				return;
+			}
 
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from Archive Browser!');
+			// Display a message box to the user
+			let msg: string = "Archive Browser Extract called with parameter: " + path;
+			vscode.window.showInformationMessage(msg);
+		});
 	});
 
 	context.subscriptions.push(disposable);
