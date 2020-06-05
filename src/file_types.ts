@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 
 // enum of supported filetypes & their extensions.
-enum FileTypes {
+export enum FileTypes {
     ZIP = ".zip",
     TAR = ".tar",
     GZIP = ".gz",
@@ -11,7 +11,7 @@ enum FileTypes {
     SEVENZIP = ".7z", // 7Zip
 }
 
-function extract_file_at_path(path: string) {
+export function extract_file_at_path(path: string) {
     let lpath = path.toLowerCase(); // make lowercase for extension matching but don't lose original.
     let pattern = /(\.[a-zA-Z0-9]+)/g; // match a group of characters after a '.', like a file extension (or several).
     let matches = lpath.match(pattern);
@@ -28,26 +28,35 @@ function extract_file_at_path(path: string) {
         // the monolith of filetype matching (:
         if (extension === FileTypes.ZIP) {
             // .zip
+            console.log("Extracting %s file", extension)
         } else if (extension === FileTypes.TAR) {
             // .tar
+            console.log("Extracting %s file", extension)
         } else if (extension === FileTypes.GZIP) {
             if (secondary_extension && secondary_extension === FileTypes.TAR) {
                 // .tar.gz
+                console.log("Extracting %s%s file", secondary_extension, extension)
             } else {
                 // .gz
+                console.log("Extracting %s file", extension)
             }
         } else if (extension === FileTypes.BZIP2) {
             if (secondary_extension && secondary_extension === FileTypes.TAR) {
                 // .tar.bz2
+                console.log("Extracting %s%s file", secondary_extension, extension)
             } else {
                 // .bz2
+                console.log("Extracting %s file", extension)
             }
         } else if (extension === FileTypes.JAR) {
             // .jar
+            console.log("Extracting %s file", extension)
         } else if (extension === FileTypes.AAR) {
             // .aar
+            console.log("Extracting %s file", extension)
         } else if (extension === FileTypes.SEVENZIP) {
             // .7z
+            console.log("Extracting %s file", extension)
         } else {
             console.log("Unsupported file type %s", extension);
         }
