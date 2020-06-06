@@ -1,26 +1,30 @@
-//TODO: Document code
-import * as vscode from 'vscode';
 import * as os from 'os';
 import * as fs from 'fs';
 
-//Functions
-
-//TODO: Complete function
+/**
+ * Function Name: create_temp_dir()
+ * 
+ * Inputs: N/A
+ * Outputs: (String)Temp directory for extracted archives 
+ * 
+ * Summary: This function checks the "/archives" directory exists in the 
+ * default temp directory. If not then it creates it. 
+ * 
+ */
 export function create_temp_dir(){
-    let default_temp_dir: string = os.tmpdir();
+    let temp_dir: string = os.tmpdir() + '\\archive';
 
-    console.log(default_temp_dir);
+    if(fs.existsSync(temp_dir)){
+        console.log('Temp dir exists.');
+    }
+    else{
+        console.log("Temp dir doesn't exists, creating temp dir now.");
+        fs.mkdir(temp_dir, { recursive: false }, (err) =>{
+            if(err){
+                throw err;
+            }
+        });
+    }
 
-    return 0;
-}
-
-//This function might not be needed. 
-function get_os(){
-    let OS_Type: string = "Unknown";
-
-    OS_Type = "New String";
-
-    OS_Type = os.type();
-
-    return OS_Type;
+    return temp_dir;
 }
