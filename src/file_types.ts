@@ -21,7 +21,7 @@ export enum CompressionType {
 export function extract_file_at_path(path: string) {
 	let extension = get_file_extension(path);
 
-	if (extension != "") {
+	if (extension !== "") {
 		// handle compression only types first.
 		if ((<any>Object).values(CompressionType).includes(extension)) { // TypeScript -- this shouldn't be this ugly.
 			var new_path = ""; // TODO: make this an actual value in the conditionals below once decompression returns are known.
@@ -40,19 +40,19 @@ export function extract_file_at_path(path: string) {
 		// handle archive or combined types.
 		if (extension === ArchiveType.ZIP) {
 			// .zip
-			console.log("Extracting %s file", extension)
+			console.log("Extracting %s file", extension);
 		} else if (extension === ArchiveType.TAR) {
 			// .tar
-			console.log("Extracting %s file", extension)
+			console.log("Extracting %s file", extension);
 		} else if (extension === ArchiveType.JAR) {
 			// .jar
-			console.log("Extracting %s file", extension)
+			console.log("Extracting %s file", extension);
 		} else if (extension === ArchiveType.AAR) {
 			// .aar
-			console.log("Extracting %s file", extension)
+			console.log("Extracting %s file", extension);
 		} else if (extension === ArchiveType.SEVENZIP) {
 			// .7z
-			console.log("Extracting %s file", extension)
+			console.log("Extracting %s file", extension);
 		} else {
 			console.log("Unsupported file type %s", extension);
 		}
@@ -68,6 +68,9 @@ function get_file_extension(path: string): string {
 	let matches = lpath.match(pattern);
 
 	var ext;
-	if (matches) return matches[matches?.length - 1]; // only return one file extension. can run again to check for more.
-	return ""; // if no extension, return empty string.
+	if (matches) {
+		return matches[matches?.length - 1]; // only return one file extension. can run again to check for more.
+	} else {
+		return ""; // if no extension, return empty string.
+	}
 }
