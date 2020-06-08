@@ -11,6 +11,18 @@ export function activate(context: vscode.ExtensionContext) {
 	// This line of code will only be executed once when your extension is activated
 	console.log('Archive Browser activated.');
 
+	// Command that will run when extracting files from the context menu
+	// Command defined in package.json
+	let place = vscode.commands.registerCommand('archive-browser.menuExtract', (uri:vscode.Uri) => {
+		// Saves the file path of the file
+		let path = uri.fsPath;
+
+		//Displays message to user with file path
+		let msg: string = `Archive Browser Extracting From: ` + path;
+		vscode.window.showInformationMessage(msg);
+
+	});
+
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
