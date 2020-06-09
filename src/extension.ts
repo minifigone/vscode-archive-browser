@@ -64,15 +64,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 //functions that can be imported for mass uses in calls to log info
 export function logExtract(path: string) {
-	extract.info("Exctracting files from: " + path);
-}
-
-export function logDecomp(path: string) {
-	extract.info("Decompressing: " + path);
-}
-
-export function dirCreate(path: string) {
-	extract.info("Creating temp directory named: temp_dire ");
+	extract.info("Attempting to extract files from: " + path);
 }
 // this method is called when your extension is deactivated
 export function deactivate() {}
