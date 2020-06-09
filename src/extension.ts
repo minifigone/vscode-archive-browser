@@ -2,6 +2,14 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { extract_file_at_path } from './file_types';
+import {Category,CategoryLogger,CategoryServiceFactory,CategoryConfiguration,LogLevel} from "typescript-logging";
+
+CategoryServiceFactory.setDefaultConfiguration(new CategoryConfiguration(LogLevel.Info));
+
+export const extract = new Category("File Extract");
+export const decomp = new Category("File Decompression");
+export const dir = new Category("Temp Directory");
+
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -16,6 +24,8 @@ export function activate(context: vscode.ExtensionContext) {
 	let place = vscode.commands.registerCommand('archive-browser.menuExtract', (uri:vscode.Uri) => {
 		// Saves the file path of the file
 		let path = uri.fsPath;
+
+		logExtract(path);
 
 		//Displays message to user with file path
 		let msg: string = `Archive Browser Extracting From: ` + path;
@@ -35,6 +45,8 @@ export function activate(context: vscode.ExtensionContext) {
 			if (!path) { // No input; get out
 				return;
 			}
+			
+			logExtract(path);
 
 			// Display a message box to the user
 			let msg: string = "Archive Browser Extract called with parameter: " + path;
@@ -46,5 +58,16 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable);
 }
 
+export function logExtract(path: string) {
+	extract.info("Exctracting files from: " + path);
+}
+
+export function logDecomp(path: string) {
+	extract.info("Decompressing: " + path);
+}
+
+export function dirCreate(path: string) {
+	extract.info("Creating temp directory named: temp_dire ");
+}
 // this method is called when your extension is deactivated
 export function deactivate() {}

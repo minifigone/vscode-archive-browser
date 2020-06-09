@@ -1,5 +1,6 @@
 import * as os from 'os';
 import * as fs from 'fs';
+import {dir} from "./extension";
 
 /**
  * Function Name: create_temp_dir()
@@ -15,10 +16,10 @@ export function create_temp_dir(){
     let temp_dir: string = os.tmpdir() + '\\archive';
 
     if(fs.existsSync(temp_dir)){
-        console.log('Temp dir exists.');
+        dir.warn("Temp direcory already exists");
     }
     else{
-        console.log("Temp dir doesn't exists, creating temp dir now.");
+        dir.info("Creating Temp directory named: temp_dir");
         fs.mkdir(temp_dir, { recursive: false }, (err) =>{
             if(err){
                 throw err;

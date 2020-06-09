@@ -1,4 +1,6 @@
 import * as vscode from 'vscode';
+import {extract, decomp, dir} from "./extension";
+import { Category } from 'typescript-logging';
 
 // supported file extensions that handle archiving or archiving and compression.
 export enum ArchiveType {
@@ -57,7 +59,8 @@ export function extract_file_at_path(path: string) {
 			console.log("Unsupported file type %s", extension);
 		}
 	} else {
-		console.log("Unable to determine file type");
+		//console.log("Unable to determine file type");
+		extract.warn("Unable to determine file type", extract);
 	}
 }
 
