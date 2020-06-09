@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import {extract, decomp, dir} from "./extension";
 
 // supported file extensions that handle archiving or archiving and compression.
 export enum ArchiveType {
@@ -27,10 +28,10 @@ export function extract_file_at_path(path: string) {
 			var new_path = ""; // TODO: make this an actual value in the conditionals below once decompression returns are known.
 			if (extension === CompressionType.GZIP) {
 				// .gz
-				console.log("Decompressing %s file", extension);
+				decomp.info("Decompressing " + extension + " file");
 			} else if (extension === CompressionType.BZIP2) {
 				// .bz2
-				console.log("Decompressing %s file", extension);
+				decomp.info("Decompressing " + extension + " file");
 			}
 
 			extension = get_file_extension(new_path); // if we need to handle a tarball.
@@ -40,24 +41,24 @@ export function extract_file_at_path(path: string) {
 		// handle archive or combined types.
 		if (extension === ArchiveType.ZIP) {
 			// .zip
-			console.log("Extracting %s file", extension);
+			extract.info("Extracting " + extension + " file");
 		} else if (extension === ArchiveType.TAR) {
 			// .tar
-			console.log("Extracting %s file", extension);
+			extract.info("Extracting " + extension + " file");
 		} else if (extension === ArchiveType.JAR) {
 			// .jar
-			console.log("Extracting %s file", extension);
+			extract.info("Extracting " + extension + " file");
 		} else if (extension === ArchiveType.AAR) {
 			// .aar
-			console.log("Extracting %s file", extension);
+			extract.info("Extracting " + extension + " file");
 		} else if (extension === ArchiveType.SEVENZIP) {
 			// .7z
-			console.log("Extracting %s file", extension);
+			extract.info("Extracting " + extension + " file");
 		} else {
-			console.log("Unsupported file type %s", extension);
+			extract.warn("File type " + extension + " is not supported");
 		}
 	} else {
-		console.log("Unable to determine file type");
+		extract.warn("Unable to determine file type", extract);
 	}
 }
 

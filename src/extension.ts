@@ -2,6 +2,16 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { extract_file_at_path } from './file_types';
+import {Category,CategoryLogger,CategoryServiceFactory,CategoryConfiguration,LogLevel} from "typescript-logging";
+
+//changes the default output to INFO instead of ERR
+CategoryServiceFactory.setDefaultConfiguration(new CategoryConfiguration(LogLevel.Info));
+
+//creates a categories for logging things that have to do with extractions, decompressions, and the temp directory
+export const extract = new Category("File Extract"); 
+export const decomp = new Category("File Decompression");
+export const dir = new Category("Temp Directory");
+
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -16,11 +26,14 @@ export function activate(context: vscode.ExtensionContext) {
 	let place = vscode.commands.registerCommand('archive-browser.menuExtract', (uri:vscode.Uri) => {
 		// Saves the file path of the file
 		let path = uri.fsPath;
+		
+		//calls function to log the extraction with the file path.
+		logExtract(path);
 
 		//Displays message to user with file path
 		let msg: string = `Archive Browser Extracting From: ` + path;
 		vscode.window.showInformationMessage(msg);
-
+		extract_file_at_path(path);
 	});
 
 	// The command has been defined in the package.json file
@@ -35,6 +48,9 @@ export function activate(context: vscode.ExtensionContext) {
 			if (!path) { // No input; get out
 				return;
 			}
+			
+			//calls function to log the extraction with the file path.
+			logExtract(path);
 
 			// Display a message box to the user
 			let msg: string = "Archive Browser Extract called with parameter: " + path;
@@ -46,5 +62,9 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable);
 }
 
+//functions that can be imported for mass uses in calls to log info
+export function logExtract(path: string) {
+	extract.info("Attempting to extract files from: " + path);
+}
 // this method is called when your extension is deactivated
 export function deactivate() {}
