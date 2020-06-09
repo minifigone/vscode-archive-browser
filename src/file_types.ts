@@ -60,7 +60,7 @@ export function extract_file_at_path(path: string) {
 		}
 	} else {
 		//console.log("Unable to determine file type");
-		extract.warn("Unable to determine file type", extract);
+		extract.warn("Unable to determine file type", extract); //example of log warning that tells user there was a problem
 	}
 }
 
