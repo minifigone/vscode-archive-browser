@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import {generate_file_info, get_file_size} from "./file_info";
 import {extract, decomp, dir} from "./extension";
 
 // supported file extensions that handle archiving or archiving and compression.
@@ -21,6 +22,9 @@ export enum CompressionType {
 // program flow controlled by file types.
 export function extract_file_at_path(path: string) {
 	let extension = get_file_extension(path);
+
+	//get bytes before extraction
+	let compressed_size = get_file_size(path);
 
 	if (extension !== "") {
 		// handle compression only types first.
@@ -57,6 +61,12 @@ export function extract_file_at_path(path: string) {
 		} else {
 			extract.warn("File type " + extension + " is not supported");
 		}
+
+		//TODO: Have the extraction return the number of bytes of the extracted file and set "decompressed_size"
+		//That or just pass the path of the extracted file to "get_file_size()" like it was done above.
+		let decompressed_size = 2048;
+		generate_file_info(path, compressed_size, decompressed_size);
+
 	} else {
 		extract.warn("Unable to determine file type", extract);
 	}
