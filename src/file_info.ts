@@ -21,7 +21,7 @@ export function generate_file_info(file_path: string, size_comp: number, size_de
     + size_decomp + "\"}}";
 
     //Replace all "\" in file_path with "\\" so the string is valid.
-    let re = /\\/gi
+    let re = /\\/gi;
     data = data.replace(re, "\\\\");
     
     fs.writeFileSync(workspace_path, data);
