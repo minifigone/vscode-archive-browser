@@ -9,7 +9,8 @@ import {extract} from "./extension";
  * @param size_comp (Number)The compressed file size in bytes, passed into the function
  * @param size_decomp (Number)The decompressed file size in bytes, passed into the function
  * 
- * Summary: 
+ * Summary: Creates a json file with info on the extracted file. Specifically the file path, 
+ * compressed file size and decompressed file size (both in bytes).
  * 
  */
 export function generate_file_info(file_path: string, size_comp: number, size_decomp: number){
