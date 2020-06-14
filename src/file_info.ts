@@ -2,15 +2,27 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import {extract} from "./extension";
 
-//TODO: Document function
+/**
+ * Function Name: generate_file_info()
+ * 
+ * @param file_path (String)The path to the extracted file
+ * @param size_comp (Number)The compressed file size in bytes, passed into the function
+ * @param size_decomp (Number)The decompressed file size in bytes, passed into the function
+ * 
+ * Summary: 
+ * 
+ */
 export function generate_file_info(file_path: string, size_comp: number, size_decomp: number){
 
     let workspace_path = vscode.workspace.rootPath + "\\extraction_info.json";
 
-    //TODO: Fix issue where file_path is an invalid string in json. EX: "C:\Users" -> "C:\\Users"
     let data = "{\"path\":\"" + file_path + "\",\"size\":{\"compressed\":\"" + size_comp + "\",\"decompressed\":\"" 
     + size_decomp + "\"}}";
 
+    //Replace all "\" in file_path with "\\" so the string is valid.
+    let re = /\\/gi
+    data = data.replace(re, "\\\\");
+    
     fs.writeFileSync(workspace_path, data);
 
     return 0;
