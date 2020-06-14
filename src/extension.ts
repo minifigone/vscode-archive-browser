@@ -17,9 +17,8 @@ export const dir = new Category("Temp Directory");
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Archive Browser activated.');
+	//line saying extension is activated
+	extract.info("GO GO EXTENSION");
 
 	// Command that will run when extracting files from the context menu
 	// Command defined in package.json

@@ -1,5 +1,6 @@
 import * as os from 'os';
 import * as fs from 'fs';
+import * as vscode from 'vscode';
 import {dir} from "./extension";
 
 /**
@@ -19,7 +20,7 @@ export function create_temp_dir(){
         dir.warn("Temp direcory already exists");
     }
     else{
-        dir.info("Creating Temp directory named: temp_dir");
+        dir.info("Creating Temp directory named: archive");
         fs.mkdir(temp_dir, { recursive: false }, (err) =>{
             if(err){
                 throw err;
@@ -27,5 +28,7 @@ export function create_temp_dir(){
         });
     }
 
+    //connects temp directory in 
+    vscode.workspace.updateWorkspaceFolders(0, 0, { uri: vscode.Uri.file(temp_dir)});
     return temp_dir;
 }
