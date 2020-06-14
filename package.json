@@ -57,6 +57,8 @@
 	},
 	"dependencies": {
 		"os": "^0.1.1",
-		"typescript-logging": "^0.6.4"
+		"typescript-logging": "^0.6.4",
+		"@types/pako": "^1.0.1",
+		"pako": "^1.0.11"
 	}
 }
