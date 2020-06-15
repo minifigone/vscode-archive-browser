@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import {ExtractionInfo} from "./file_info"
+import {ExtractionInfo} from "./file_info";
 import {extract, decomp, dir} from "./extension";
 
 // supported file extensions that handle archiving or archiving and compression.
