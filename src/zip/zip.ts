@@ -88,7 +88,6 @@ export function extract_zip(path: string) {
 // (by working backwards and pretending it's big-endian).
 // takes in a Buffer and returns an Integer of some sort.
 export function array_to_int(arr: Buffer) {
-	// TODO test me!
 	var out = 0x00000000;
 	for (var i = arr.byteLength - 1; i >= 0; i--) {
 		out = out << 8;
