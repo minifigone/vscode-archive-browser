@@ -42,7 +42,7 @@ export function extract_zip(path: string) {
 
 	var central_directory = archive_file.slice(cd_start, cd_start + cd_size);
 
-	// iterate over cd records
+	// iterate over cd records.
 	var cd_offset = 0;
 	for (var i = 0; i < num_cd_records; i++) {
 		// there are some magic numbers around these parts. idk if we should make constants for every possible offset.
@@ -87,7 +87,7 @@ export function extract_zip(path: string) {
 // convert a little-endian-byte-order array to an int.
 // (by working backwards and pretending it's big-endian).
 // takes in a Buffer and returns an Integer of some sort.
-function array_to_int(arr: Buffer) {
+export function array_to_int(arr: Buffer) {
 	// TODO test me!
 	var out = 0x00000000;
 	for (var i = arr.byteLength - 1; i >= 0; i--) {
