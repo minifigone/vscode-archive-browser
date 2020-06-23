@@ -10,6 +10,15 @@ const data_descriptor_signature: Buffer = Buffer.from([0x50, 0x4b, 0x07, 0x08]);
 const central_header_signature: Buffer = Buffer.from([0x50, 0x4b, 0x01, 0x02]);
 const central_dir_end_signature: Buffer = Buffer.from([0x50, 0x4b, 0x05, 0x06]);
 
+// values the ZIP format uses for different compression methods.
+// not all possible values are/will be supported.
+const enum CompressionMethod {
+	STORE = 0,
+	DEFLATE = 8,
+	BZIP2 = 12,
+	LZMA = 14,
+}
+
 export function extract_zip(path: string) {
 	var archive_file: Buffer;
 
@@ -66,18 +75,47 @@ export function extract_zip(path: string) {
 
 		var data = archive_file.slice(lfh_offset + lfh_length, lfh_offset + lfh_length + compressed_size);
 
-		var infl;
-		try {
-			infl = inflateSync(data);
-		} catch { // if it can't be inflated, try inflate raw.
-			try {
-				infl = inflateRawSync(data);
-			} catch (err) {
-				decomp.error("Error extracting " + filename + "from " + path, err);
+		switch (compression_method) {
+			case (CompressionMethod.STORE): {
+				if (uncompressed_size === 0) {
+					// if the file is zero size it's probably a directory, so make a directory.
+					fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, {recursive: true});
+				} else {
+					// otherwise it was actually stored uncompressed.
+					fs.writeFileSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, data);
+				}
+				break;
 			}
-		}
-		if (infl) {
-			fs.writeFileSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, infl);
+			case (CompressionMethod.DEFLATE): {
+				var infl;
+				try {
+					infl = inflateSync(data);
+				} catch { // if it can't be inflated, try inflate raw.
+					try {
+						infl = inflateRawSync(data);
+					} catch (err) {
+						decomp.error("Error extracting " + filename + "from " + path, err);
+					}
+				}
+				if (infl) {
+					fs.writeFileSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, infl);
+				}
+				break;
+			}
+			case (CompressionMethod.BZIP2): {
+				// TODO: add BZIP2 decompression when it's added for general decompression.
+				decomp.warn(filename + " compressed with BZIP2 compression, which is not yet supported for ZIP");
+				break;
+			}
+			case (CompressionMethod.LZMA): {
+				// TODO: add LZMA decompression when it's added for 7Z files.
+				decomp.warn(filename + " compressed with LZMA compression, which is not yet supported for ZIP");
+				break;
+			}
+			default: {
+				decomp.warn(filename + " compressed with unsupported compression method " + compression_method);
+				break;
+			}
 		}
 
 		cd_offset += cdfh_length;
