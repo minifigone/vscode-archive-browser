@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import {ExtractionInfo} from "./file_info";
 import {extract, decomp, dir} from "./extension";
 import {extract_zip} from './zip/zip';
 
@@ -22,6 +23,7 @@ export enum CompressionType {
 // program flow controlled by file types.
 export function extract_file_at_path(path: string) {
 	let extension = get_file_extension(path);
+	let file_info = new ExtractionInfo(path);
 
 	if (extension !== "") {
 		// handle compression only types first.
@@ -59,6 +61,10 @@ export function extract_file_at_path(path: string) {
 		} else {
 			extract.warn("File type " + extension + " is not supported");
 		}
+
+		//TODO: Update the ExtractionInfo objects extracted path after extraction is complete
+		//EX: file_info.updateExtractedPath = "c:\\Users\\bhurl\\Desktop\\Herbs.txt";
+
 	} else {
 		extract.warn("Unable to determine file type", extract);
 	}
