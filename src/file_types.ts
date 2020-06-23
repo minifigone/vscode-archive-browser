@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import {ExtractionInfo} from "./file_info";
 import {extract, decomp, dir} from "./extension";
+import {extract_zip} from './zip/zip';
 
 // supported file extensions that handle archiving or archiving and compression.
 export enum ArchiveType {
@@ -44,6 +45,7 @@ export function extract_file_at_path(path: string) {
 		if (extension === ArchiveType.ZIP) {
 			// .zip
 			extract.info("Extracting " + extension + " file");
+			extract_zip(path);
 		} else if (extension === ArchiveType.TAR) {
 			// .tar
 			extract.info("Extracting " + extension + " file");
