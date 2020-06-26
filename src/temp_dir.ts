@@ -17,7 +17,7 @@ export function create_temp_dir(){
     let temp_dir: string = os.tmpdir() + '\\archive';
 
     if(fs.existsSync(temp_dir)){
-        dir.warn("Temp direcory already exists");
+        // dir.warn("Temp direcory already exists");
     }
     else{
         dir.info("Creating Temp directory named: archive");

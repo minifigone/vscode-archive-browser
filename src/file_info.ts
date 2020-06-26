@@ -95,7 +95,7 @@ export class ExtractionInfo{
      * Summary: Updates this instances compressed_path string
      * 
      */
-    set updateCompressedPath(newPath: string){
+    set compressedPath(newPath: string){
         this.compressed_path = this.process_path(newPath);
         this.compressed_size = this.get_file_size(this.compressed_path);
         this.generate_file();
@@ -109,9 +109,19 @@ export class ExtractionInfo{
      * Summary: Updates this instances extracted_path string
      * 
      */
-    set updateExtractedPath(newPath: string){
+    set extractedPath(newPath: string){
         this.extracted_path = this.process_path(newPath);
-        this.decompressed_size = this.get_file_size(this.extracted_path);
+        // this.decompressed_size = this.get_file_size(this.extracted_path);
+        this.generate_file();
+    }
+
+    /**
+     * @param newVal (number) new decompressed size value.
+     * 
+     * Summary: Updates this.decompressed_size.
+     */
+    set decompressedSize(newVal: number) {
+        this.decompressed_size = newVal;
         this.generate_file();
     }
 
