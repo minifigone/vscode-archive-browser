@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import {ExtractionInfo} from "./file_info";
 import {extract, decomp, dir} from "./extension";
 import {extract_zip} from './zip/zip';
+import {extract_gzip} from './gzip/gzip';
 
 // supported file extensions that handle archiving or archiving and compression.
 export enum ArchiveType {
@@ -23,6 +24,7 @@ export enum CompressionType {
 // program flow controlled by file types.
 export function extract_file_at_path(path: string) {
 	let extension = get_file_extension(path);
+	//TODO: Remove file_info stuff
 	let file_info = new ExtractionInfo(path);
 
 	if (extension !== "") {
@@ -32,6 +34,7 @@ export function extract_file_at_path(path: string) {
 			if (extension === CompressionType.GZIP) {
 				// .gz
 				decomp.info("Decompressing " + extension + " file");
+				extract_gzip(path);
 			} else if (extension === CompressionType.BZIP2) {
 				// .bz2
 				decomp.info("Decompressing " + extension + " file");
