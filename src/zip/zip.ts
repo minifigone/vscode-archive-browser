@@ -31,7 +31,7 @@ export function extract_zip(path: string): ExtractionInfo | null {
 	if (fs.existsSync(path)) {
 		archive_file = fs.readFileSync(path);
 	} else {
-		console.log("Provided path (%s) does not exist.", path);
+		decomp.warn("Provided path does not exist: " + path);
 		return null;
 	}
 
