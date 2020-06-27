@@ -3,6 +3,7 @@ import {inflateSync, inflateRawSync} from 'zlib';
 import * as pathlib from 'path';
 import * as tmp from '../temp_dir';
 import {decomp} from '../extension';
+import {ExtractionInfo} from '../file_info';
 
 // zip file header/record signatures.
 const local_header_signature: Buffer = Buffer.from([0x50, 0x4b, 0x03, 0x04]);
@@ -19,15 +20,22 @@ const enum CompressionMethod {
 	LZMA = 14,
 }
 
-export function extract_zip(path: string) {
+/**
+ * Extract a .zip file.
+ * @param path path to file to extract.
+ * @returns null if path is nonexistent, ExtractionInfo object otherwise.
+ */
+export function extract_zip(path: string): ExtractionInfo | null {
 	var archive_file: Buffer;
 
 	if (fs.existsSync(path)) {
 		archive_file = fs.readFileSync(path);
 	} else {
-		console.log("Provided path (%s) does not exist.", path);
-		return;
+		decomp.warn("Provided path does not exist: " + path);
+		return null;
 	}
+
+	var total_expanded_size = 0;
 
 	var path_object = pathlib.parse(path);
 	// make a directory in the temp directory.
@@ -65,6 +73,7 @@ export function extract_zip(path: string) {
 		var compression_method = array_to_int(cd_file_header.slice(10, 12));
 		var compressed_size = array_to_int(cd_file_header.slice(20, 24));
 		var uncompressed_size = array_to_int(cd_file_header.slice(24, 28));
+		total_expanded_size += uncompressed_size;
 		var lfh_offset = array_to_int(cd_file_header.slice(42, 46));
 
 		// looking at the local record info.
@@ -120,6 +129,12 @@ export function extract_zip(path: string) {
 
 		cd_offset += cdfh_length;
 	}
+
+	var info = new ExtractionInfo(path);
+	info.extractedPath = tmp.create_temp_dir() + "/" + path_object.name;
+	info.decompressedSize = total_expanded_size;
+
+	return info;
 }
 
 // convert a little-endian-byte-order array to an int.
