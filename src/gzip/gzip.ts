@@ -5,6 +5,16 @@ import * as tmp from '../temp_dir';
 import {decomp} from '../extension';
 import {ExtractionInfo} from '../file_info';
 
+/**
+ * Function Name: extract_gzip()
+ * 
+ * @param path (String) Path to a .gz file
+ * @returns null if path is nonexistent, ExtractionInfo object otherwise.
+ * 
+ * Summary: This function takes a path (presumably to a .gz file) and makes 
+ * a copy in a temp folder, extracts it and removes the copied .gz file.
+ * 
+ */
 export function extract_gzip(path: string){
     var archive_file: Buffer;
 
@@ -42,13 +52,11 @@ export function extract_gzip(path: string){
     fs.writeFileSync(new_path + "\\" + temp_path.name, infl);
     fs.unlinkSync(temp_archive);
 
-    //Create an ExtractionInfo object and return it.
+    //Create an ExtractionInfo object and return
     var info = new ExtractionInfo(path);
-    //These errors will be fixed once the PR for #31/32 is merged in
-    //info.extractedPath = new_path;
-    //let file_stats = fs.statSync(new_path);
-    //info.decompressedSize = file_stats["size"];
+    info.extractedPath = new_path;
+    let file_stats = fs.statSync(new_path + "\\" + temp_path.name);
+    info.decompressedSize = file_stats["size"];
 
     return info;
-
 }

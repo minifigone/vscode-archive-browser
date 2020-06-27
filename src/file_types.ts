@@ -24,17 +24,20 @@ export enum CompressionType {
 // program flow controlled by file types.
 export function extract_file_at_path(path: string) {
 	let extension = get_file_extension(path);
-	//TODO: Remove file_info stuff
-	let file_info = new ExtractionInfo(path);
+	var info;
 
 	if (extension !== "") {
 		// handle compression only types first.
 		if ((<any>Object).values(CompressionType).includes(extension)) { // TypeScript -- this shouldn't be this ugly.
-			var new_path = ""; // TODO: make this an actual value in the conditionals below once decompression returns are known.
+			var new_path = ""; // TODO: make this an actual value in .bz2 below once decompression returns are known.
 			if (extension === CompressionType.GZIP) {
 				// .gz
 				decomp.info("Decompressing " + extension + " file");
-				extract_gzip(path);
+				info = extract_gzip(path);
+				if(info !== null){
+					new_path = info?.extractedPath;
+				}
+				//path = new_path; TODO: once new_path works uncomment this
 			} else if (extension === CompressionType.BZIP2) {
 				// .bz2
 				decomp.info("Decompressing " + extension + " file");
@@ -43,12 +46,11 @@ export function extract_file_at_path(path: string) {
 			extension = get_file_extension(new_path); // if we need to handle a tarball.
 		}
 
-
 		// handle archive or combined types.
 		if (extension === ArchiveType.ZIP) {
 			// .zip
 			extract.info("Extracting " + extension + " file");
-			extract_zip(path);
+			info = extract_zip(path);
 		} else if (extension === ArchiveType.TAR) {
 			// .tar
 			extract.info("Extracting " + extension + " file");
@@ -64,9 +66,6 @@ export function extract_file_at_path(path: string) {
 		} else {
 			extract.warn("File type " + extension + " is not supported");
 		}
-
-		//TODO: Update the ExtractionInfo objects extracted path after extraction is complete
-		//EX: file_info.updateExtractedPath = "c:\\Users\\bhurl\\Desktop\\Herbs.txt";
 
 	} else {
 		extract.warn("Unable to determine file type", extract);
