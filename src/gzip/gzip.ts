@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import {inflateSync, inflateRawSync, gunzipSync} from 'zlib';
+import {gunzipSync} from 'zlib';
 import * as pathlib from 'path';
 import * as tmp from '../temp_dir';
 import {decomp} from '../extension';
@@ -15,7 +15,6 @@ export function extract_gzip(path: string){
         decomp.warn("File at path " + path + "does not exist.");
         return null;
     }
-
     var temp_path = pathlib.parse(path);
     var new_path = tmp.create_temp_dir() + '\\' + temp_path.name;
 
@@ -23,40 +22,33 @@ export function extract_gzip(path: string){
     if(!fs.existsSync(new_path)){
         fs.mkdirSync(new_path);
     }
-    var n_path = new_path + '\\' + temp_path.base;
 
-    decomp.info("path: " + path);
-    decomp.info("n_path: " + n_path);
-    decomp.info("new_path: " + new_path);
-    decomp.info("Shit: " + new_path + "\\" + temp_path.name);
-
-    fs.copyFileSync(path, n_path);
+    //Copy the .gz file to the temp directory and creates a buffer
+    var temp_archive = new_path + '\\' + temp_path.base;
     var infl;
-    //infl = gunzipSync(n_path);
-    //fs.writeFileSync(new_path + "\\" + temp_path.name, infl);
+    var buf: Buffer;
+    fs.copyFileSync(path, temp_archive);
+    buf = fs.readFileSync(temp_archive);
 
-    
+    //Unzip the file
     try{
-        decomp.info("Trying inflateSync");
-        infl = inflateSync(new_path);
-    } catch{
-        try{
-            decomp.info("Trying inflateRawSync");
-            infl = inflateRawSync(new_path);
-        }
-        catch(err){
-            decomp.error("Error extracting", err);
-        }
+        infl = gunzipSync(buf);
+    }
+    catch(err){
+        decomp.error("Error extracting", err);
     }
 
-    decomp.info("Writing...");
+    //Write unzipped buffer to a file & delete the .gz file
     fs.writeFileSync(new_path + "\\" + temp_path.name, infl);
-    decomp.info("Done writing");
+    fs.unlinkSync(temp_archive);
 
+    //Create an ExtractionInfo object and return it.
     var info = new ExtractionInfo(path);
     //These errors will be fixed once the PR for #31/32 is merged in
     //info.extractedPath = new_path;
     //let file_stats = fs.statSync(new_path);
     //info.decompressedSize = file_stats["size"];
+
+    return info;
 
 }
