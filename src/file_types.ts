@@ -37,7 +37,6 @@ export function extract_file_at_path(path: string) {
 				if(info !== null){
 					new_path = info?.extractedPath;
 				}
-				//path = new_path; TODO: once new_path works uncomment this
 			} else if (extension === CompressionType.BZIP2) {
 				// .bz2
 				decomp.info("Decompressing " + extension + " file");
