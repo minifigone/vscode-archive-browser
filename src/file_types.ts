@@ -52,6 +52,7 @@ export function extract_file_at_path(path: string) {
 			info = extract_zip(path);
 		} else if (extension === ArchiveType.TAR) {
 			// .tar
+			//TODO: Check if there is a value in new_path that needs to be extracted
 			extract.info("Extracting " + extension + " file");
 		} else if (extension === ArchiveType.JAR) {
 			// .jar
