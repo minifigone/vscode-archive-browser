@@ -105,7 +105,7 @@ function getWebviewContent(size: number) {
 			<title>Archive Information</title> 
 		</head> 
 		<body> 
-			<div style="font-size:30px">File size: ${size} bytes</div> 
+			<div style="font-size:30px">Unextracted File Size: ${size} bytes</div> 
 			<h3><h3>
 			<button onclick="extract()">Extract Files</button>
 			<script>
