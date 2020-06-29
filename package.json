@@ -11,7 +11,8 @@
 	],
 	"activationEvents": [
 		"onCommand:archive-browser.extract",
-		"onCommand:archive-browser.menuExtract"
+		"onCommand:archive-browser.menuExtract",
+		"onCommand:archive-browser.getInfo"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -23,6 +24,10 @@
 			{
 				"command": "archive-browser.menuExtract",
 				"title": "Extract Files"
+			},
+			{
+				"command": "archive-browser.getInfo",
+				"title": "Get Info on Archived File"
 			}
 		],
 		"menus": {
@@ -30,6 +35,10 @@
 				{
 					"when": "isFileSystemResource",
 					"command": "archive-browser.menuExtract"
+				},
+				{
+					"when": "isFileSystemResource",
+					"command": "archive-browser.getInfo"
 				}
 			]
 		}
