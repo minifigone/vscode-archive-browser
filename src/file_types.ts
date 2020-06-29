@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import {ExtractionInfo} from "./file_info";
 import {extract, decomp, dir} from "./extension";
 import {extract_zip} from './zip/zip';
+import {extract_gzip} from './gzip/gzip';
 
 // supported file extensions that handle archiving or archiving and compression.
 export enum ArchiveType {
@@ -23,15 +24,19 @@ export enum CompressionType {
 // program flow controlled by file types.
 export function extract_file_at_path(path: string) {
 	let extension = get_file_extension(path);
-	let file_info = new ExtractionInfo(path);
+	var info;
 
 	if (extension !== "") {
 		// handle compression only types first.
 		if ((<any>Object).values(CompressionType).includes(extension)) { // TypeScript -- this shouldn't be this ugly.
-			var new_path = ""; // TODO: make this an actual value in the conditionals below once decompression returns are known.
+			var new_path = ""; // TODO: make this an actual value in .bz2 below once decompression returns are known.
 			if (extension === CompressionType.GZIP) {
 				// .gz
 				decomp.info("Decompressing " + extension + " file");
+				info = extract_gzip(path);
+				if(info !== null){
+					new_path = info?.extractedPath;
+				}
 			} else if (extension === CompressionType.BZIP2) {
 				// .bz2
 				decomp.info("Decompressing " + extension + " file");
@@ -40,14 +45,14 @@ export function extract_file_at_path(path: string) {
 			extension = get_file_extension(new_path); // if we need to handle a tarball.
 		}
 
-
 		// handle archive or combined types.
 		if (extension === ArchiveType.ZIP) {
 			// .zip
 			extract.info("Extracting " + extension + " file");
-			extract_zip(path);
+			info = extract_zip(path);
 		} else if (extension === ArchiveType.TAR) {
 			// .tar
+			//TODO: Check if there is a value in new_path that needs to be extracted
 			extract.info("Extracting " + extension + " file");
 		} else if (extension === ArchiveType.JAR) {
 			// .jar
@@ -61,9 +66,6 @@ export function extract_file_at_path(path: string) {
 		} else {
 			extract.warn("File type " + extension + " is not supported");
 		}
-
-		//TODO: Update the ExtractionInfo objects extracted path after extraction is complete
-		//EX: file_info.updateExtractedPath = "c:\\Users\\bhurl\\Desktop\\Herbs.txt";
 
 	} else {
 		extract.warn("Unable to determine file type", extract);
