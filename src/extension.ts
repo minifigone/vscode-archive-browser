@@ -32,7 +32,7 @@ export function activate(context: vscode.ExtensionContext) {
 		//creates webview panel
 		const panel = vscode.window.createWebviewPanel('Info', path, vscode.ViewColumn.One,  {enableScripts: true});
 
-		panel.webview.html = getWebviewContent(file_info.compressedSize);
+		panel.webview.html = getWebviewContent(file_info.compressedSize, path);
 
 		//waits for a message from the HTML to extract the files
 		panel.webview.onDidReceiveMessage(
@@ -97,17 +97,27 @@ export function logExtract(path: string) {
 //Webview controller. Creates the new webview pane.
 //If the the "Extract File" button is pressed, it sends a message back to info
 // to extract the file's contents. 
-function getWebviewContent(size: number) {
+function getWebviewContent(size: number, path: string) {
 	const tmp =  
 	`<html> 
 	<html lang="en">
 		<head> 
-			<title>Archive Information</title> 
+		<style>
+		.button {
+			border: none;
+			color: white;
+			padding: 15px 30px;
+			font-size: 16px;
+			margin: 5px 15px;
+			background-color: #008CBA;
+		}
+		</style>
 		</head> 
 		<body> 
-			<div style="font-size:30px">Unextracted File Size: ${size} bytes</div> 
-			<h3><h3>
-			<button onclick="extract()">Extract Files</button>
+			<div style="font-size:24px">File Path: ${path}</div><br>
+			<div style="font-size:24px">Unextracted File Size: ${size} bytes</div><br>
+			
+			<button class="button button" onclick="extract()">Extract Files</button>
 			<script>
 				function extract(){
 					const vscode = acquireVsCodeApi();
