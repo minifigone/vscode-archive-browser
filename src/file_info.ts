@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import {basename} from 'path';
-import {extract} from "./extension";
+import {extract, decomp} from "./extension";
 
 /**
  * Class Name: ExtractionInfo
