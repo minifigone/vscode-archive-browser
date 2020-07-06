@@ -26,6 +26,6 @@ export function create_temp_dir(){
     }
 
     //connects temp directory in 
-    vscode.workspace.updateWorkspaceFolders(0, 0, { uri: vscode.Uri.file(temp_dir)});
+    vscode.workspace.updateWorkspaceFolders(vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders.length : 0, null, { uri: vscode.Uri.file(temp_dir)});
     return temp_dir;
 }
