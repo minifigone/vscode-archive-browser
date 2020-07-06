@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import * as pathlib from 'path';
 import {ExtractionInfo} from "./file_info";
 import {extract, decomp, dir} from "./extension";
 import {extract_zip} from './zip/zip';
@@ -57,6 +58,8 @@ export function extract_file_at_path(path: string) {
 			//TODO: Check if there is a value in new_path that needs to be extracted
 			extract.info("Extracting " + extension + " file");
 			if (new_path) {
+				let new_path_object = pathlib.parse(new_path);
+				new_path = new_path + "/" + new_path_object.base;
 				info = extract_tar(new_path);
 			} else {
 				info = extract_tar(path);
