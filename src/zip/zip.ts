@@ -90,6 +90,9 @@ export function extract_zip(path: string): ExtractionInfo | null {
 					// if the file is zero size it's probably a directory, so make a directory.
 					fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, {recursive: true});
 				} else {
+					if (!fs.existsSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + pathlib.parse(filename.toString()).dir)) {
+						fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + pathlib.parse(filename.toString()).dir, {recursive: true});
+					}
 					// otherwise it was actually stored uncompressed.
 					fs.writeFileSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, data);
 				}
@@ -107,6 +110,9 @@ export function extract_zip(path: string): ExtractionInfo | null {
 					}
 				}
 				if (infl) {
+					if (!fs.existsSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + pathlib.parse(filename.toString()).dir)) {
+						fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + pathlib.parse(filename.toString()).dir, {recursive: true});
+					}
 					fs.writeFileSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, infl);
 				}
 				break;
