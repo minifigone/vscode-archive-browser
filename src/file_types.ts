@@ -5,6 +5,7 @@ import {extract, decomp, dir} from "./extension";
 import {extract_zip} from './zip/zip';
 import {extract_gzip} from './gzip/gzip';
 import {extract_tar} from './tar/tar';
+import {extract_jar} from './jar/jar';
 
 // supported file extensions that handle archiving or archiving and compression.
 export enum ArchiveType {
@@ -52,10 +53,15 @@ export function extract_file_at_path(path: string) {
 		if (extension === ArchiveType.ZIP) {
 			// .zip
 			extract.info("Extracting " + extension + " file");
-			info = extract_zip(path);
+			if (new_path) {
+				let new_path_object = pathlib.parse(new_path);
+				new_path = new_path + "/" + new_path_object.base;
+				info = extract_zip(new_path);
+			} else {
+				info = extract_zip(path);
+			}
 		} else if (extension === ArchiveType.TAR) {
 			// .tar
-			//TODO: Check if there is a value in new_path that needs to be extracted
 			extract.info("Extracting " + extension + " file");
 			if (new_path) {
 				let new_path_object = pathlib.parse(new_path);
@@ -67,6 +73,13 @@ export function extract_file_at_path(path: string) {
 		} else if (extension === ArchiveType.JAR) {
 			// .jar
 			extract.info("Extracting " + extension + " file");
+			if (new_path) {
+				let new_path_object = pathlib.parse(new_path);
+				new_path = new_path + "/" + new_path_object.base;
+				info = extract_jar(new_path);
+			} else {
+				info = extract_jar(path);
+			}
 		} else if (extension === ArchiveType.AAR) {
 			// .aar
 			extract.info("Extracting " + extension + " file");
