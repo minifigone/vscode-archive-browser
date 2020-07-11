@@ -101,14 +101,11 @@ export function extract_zip(path: string): ExtractionInfo | null {
 			case (CompressionMethod.DEFLATE): {
 				var infl;
 				try {
-                    decomp.info("Method: inflateSync");
 					infl = inflateSync(data);
 				} catch { // if it can't be inflated, try inflate raw.
 					try {
-                        decomp.info("Method: inflateRawSync");
 						infl = inflateRawSync(data);
 					} catch (err) {
-                        decomp.info("Method: Error");
 						decomp.error("Error extracting " + filename + "from " + path, err);
 					}
 				}
