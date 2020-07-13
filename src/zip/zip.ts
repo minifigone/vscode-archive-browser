@@ -110,7 +110,6 @@ export function extract_zip(path: string): ExtractionInfo | null {
 					}
 				}
 				if (infl) {
-                    // if (infl.length === 0) {
                     if (uncompressed_size === 0 && filename.toString().charAt(filename.length - 1) === '/') {
 				        // if the file is zero size it's probably a directory, so make a directory.
 					    fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, {recursive: true});
