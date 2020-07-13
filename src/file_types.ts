@@ -70,6 +70,7 @@ export function extract_file_at_path(path: string) {
 		} else if (extension === ArchiveType.AAR) {
 			// .aar
 			extract.info("Extracting " + extension + " file");
+			info = extract_zip(path);
 		} else if (extension === ArchiveType.SEVENZIP) {
 			// .7z
 			extract.info("Extracting " + extension + " file");
