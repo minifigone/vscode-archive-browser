@@ -7,7 +7,7 @@ An extension for extracting and browsing archive files from inside of the VS Cod
 **This is pre-release software.
 Features may be missing or incomplete.**
 Our testing capabilities are limited at this time.
-Please the the Contributing section for more information.
+Please see the Contributing section for more information.
 
 - Extract ZIP and ZIP-like archives compressed using Deflate or Store
   - ZIP (.zip)
