@@ -81,6 +81,11 @@ export function extract_file_at_path(path: string) {
 	} else {
 		extract.warn("Unable to determine file type", extract);
 	}
+
+	if (info) {
+		//connects temp directory in
+		vscode.workspace.updateWorkspaceFolders(vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders.length : 0, null, { uri: vscode.Uri.file(info.extractedPath)});
+	}
 }
 
 // returns the last group matching a regex that matches file extensions in a string.

@@ -26,7 +26,7 @@ export function extract_gzip(path: string){
         return null;
     }
     var temp_path = pathlib.parse(path);
-    var new_path = tmp.create_temp_dir() + '\\' + temp_path.name;
+    var new_path = tmp.create_temp_dir() + '/' + temp_path.name;
     var infl;
 
     //Make a new directory in the temp directory if not already there.
@@ -43,12 +43,12 @@ export function extract_gzip(path: string){
     }
 
     //Write unzipped buffer to a file
-    fs.writeFileSync(new_path + "\\" + temp_path.name, infl);
+    fs.writeFileSync(new_path + "/" + temp_path.name, infl);
 
     //Create an ExtractionInfo object and return
     var info = new ExtractionInfo(path);
     info.extractedPath = new_path;
-    let file_stats = fs.statSync(new_path + "\\" + temp_path.name);
+    let file_stats = fs.statSync(new_path + "/" + temp_path.name);
     info.decompressedSize = file_stats["size"];
 
     return info;

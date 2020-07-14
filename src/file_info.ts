@@ -169,7 +169,7 @@ export class ExtractionInfo{
      * 
      */
     private check_directory(): string{
-        let workspace_path = vscode.workspace.rootPath + "\\.vscode";
+        let workspace_path = vscode.workspace.rootPath + "/.vscode";
         if(!fs.existsSync(workspace_path)){
             fs.mkdir(workspace_path, { recursive: false }, (err) =>{
                 if(err){
@@ -177,7 +177,7 @@ export class ExtractionInfo{
                 }
             });
         }
-        workspace_path = workspace_path + "\\archive-browser";
+        workspace_path = workspace_path + "/archive-browser";
         if(!fs.existsSync(workspace_path)){
             fs.mkdir(workspace_path, { recursive: false }, (err) =>{
                 if(err){
@@ -196,7 +196,7 @@ export class ExtractionInfo{
      * 
      */
     private generate_file(){
-        let workspace_path = this.check_directory() + "\\" + this.filename + ".json";
+        let workspace_path = this.check_directory() + "/" + this.filename + ".json";
 
         let data = "{\"compressed_path\":\"" + this.compressed_path + "\", \"extracted_path\":\"" + this.extracted_path + "\",\"size\":{\"compressed\":\"" + this.compressed_size 
         + "\",\"decompressed\":\"" + this.decompressed_size + "\"}}";
