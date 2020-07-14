@@ -25,6 +25,5 @@ export function create_temp_dir(){
         });
     }
 
-    //connects temp directory in 
     return temp_dir;
 }

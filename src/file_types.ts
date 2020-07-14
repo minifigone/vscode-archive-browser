@@ -83,6 +83,7 @@ export function extract_file_at_path(path: string) {
 	}
 
 	if (info) {
+		//connects temp directory in
 		vscode.workspace.updateWorkspaceFolders(vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders.length : 0, null, { uri: vscode.Uri.file(info.extractedPath)});
 	}
 }
