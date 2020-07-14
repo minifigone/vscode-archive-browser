@@ -14,7 +14,7 @@ import {dir} from "./extension";
  * 
  */
 export function create_temp_dir(){
-    let temp_dir: string = os.tmpdir() + '\\archive';
+    let temp_dir: string = os.tmpdir() + '/archive';
 
     if(!fs.existsSync(temp_dir)) {
         dir.info("Creating Temp directory named: archive");
@@ -25,7 +25,5 @@ export function create_temp_dir(){
         });
     }
 
-    //connects temp directory in 
-    vscode.workspace.updateWorkspaceFolders(vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders.length : 0, null, { uri: vscode.Uri.file(temp_dir)});
     return temp_dir;
 }
