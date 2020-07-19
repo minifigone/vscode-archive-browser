@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import { extract_file_at_path } from './file_types';
 import {Category,CategoryLogger,CategoryServiceFactory,CategoryConfiguration,LogLevel} from "typescript-logging";
 import {ExtractionInfo} from './file_info';
+import * as pathlib from 'path';
 
 //changes the default output to INFO instead of ERR
 CategoryServiceFactory.setDefaultConfiguration(new CategoryConfiguration(LogLevel.Info));
@@ -45,8 +46,8 @@ export function activate(context: vscode.ExtensionContext) {
 				switch (message.command) {
 				case 'extract':
 					logExtract(path);
+					panel.dispose();
 					extract_file_at_path(path);
-					updateWebview(file_info.decompressedSize, file_info.extractedPath);
 					return;
 				case 'file':
 					let uri = vscode.Uri.file(file_info.extractedPath);
@@ -128,10 +129,10 @@ function getWebviewContent(size: number, path: string, eSize: number) {
 			<div style="font-size:24px">Unextracted File Size: ${size} bytes</div><br>
 			<div id="size" style="font-size:24px"></div><br>
 			<br>
-			<button class="button button" id="location">File Location</button>
-			<br>
-			
+			<p>Running extract will close this Webview.</p>
 			<button class="button button" id="extract">Extract Files</button>
+			<br>
+			<div id="but"></div>
 
 			<script>
 			const vscode = acquireVsCodeApi();
@@ -139,6 +140,7 @@ function getWebviewContent(size: number, path: string, eSize: number) {
 				if(${eSize}>0){
 					var text = "Extracted File Size: "+${eSize}+" bytes";
 					document.getElementById("size").innerHTML = text;
+					document.getElementById("but").innerHTML = '<button class="button button" id="location" onclick=file()>Open File In New Window</button>';
 				}
 				function file(){
 					vscode.postMessage({command: 'file'})
@@ -146,11 +148,8 @@ function getWebviewContent(size: number, path: string, eSize: number) {
 				function extract(){
 					var text = "Extracted File Size: "+${eSize}+" bytes";
 					vscode.postMessage({command: 'extract'})
-					document.getElementById("size").innerHTML = text;
 				}
 
-				var loc = document.getElementById('location');
-				loc.addEventListener('click', file, false, false);
 				
 				var ex = document.getElementById('extract');
 				ex.addEventListener('click', extract, false, false);
