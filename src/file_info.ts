@@ -16,6 +16,7 @@ export class ExtractionInfo{
     private filename: string = "";
     private compressed_path: string = "";
     private extracted_path: string = "";
+    private file_count: number = -1;
     private compressed_size: number = -1;
     private decompressed_size: number = -1;
     private replace = /\\/gi;
@@ -88,7 +89,17 @@ export class ExtractionInfo{
     }
 
     /**
-     * Function Name: updateCompressedPath()
+     * Function Name: fileCount
+     * 
+     * Summary: Returns the file_count variable
+     * 
+     */
+    get fileCount(): number{
+        return this.file_count;
+    }
+
+    /**
+     * Function Name: CompressedPath()
      * 
      * @param newPath (String) The new compressed_path
      * 
@@ -102,7 +113,7 @@ export class ExtractionInfo{
     }
 
     /**
-     * Function Name: updateExtractedPath()
+     * Function Name: ExtractedPath()
      * 
      * @param newPath (String) The new extracted_path
      * 
@@ -115,12 +126,28 @@ export class ExtractionInfo{
     }
 
     /**
+     * Function Name: decompressedSize()
+     * 
      * @param newVal (number) new decompressed size value.
      * 
      * Summary: Updates this.decompressed_size.
+     * 
      */
     set decompressedSize(newVal: number) {
         this.decompressed_size = newVal;
+        this.generate_file();
+    }
+
+    /**
+     * Function Name: fileCount()
+     * 
+     * @param newVal (number) new file_count value
+     * 
+     * Summary: Updates this.file_count
+     * 
+     */
+    set fileCount(newVal: number){
+        this.file_count = newVal;
         this.generate_file();
     }
 
