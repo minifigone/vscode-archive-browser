@@ -41,7 +41,7 @@ export class ExtractionInfo{
         //Checking if a .json file already exists
         let workspace_path = this.check_directory() + "/" + this.filename + ".json";
         let ret = this.load(workspace_path);
-        if(ret==-1){
+        if(ret===-1){
             //Get file size from provided path
             this.compressed_size = this.get_file_size(this.compressed_path);
 
