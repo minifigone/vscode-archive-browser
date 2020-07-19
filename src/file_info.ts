@@ -255,7 +255,6 @@ export class ExtractionInfo{
     public load(path: string): number{
         if(!fs.existsSync(path)){
             //Doesn't exist
-            vscode.window.showErrorMessage("File at " + path + " does not exist.");
             return -1;
         }
 
