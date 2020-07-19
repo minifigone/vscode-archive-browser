@@ -28,7 +28,7 @@ export function activate(context: vscode.ExtensionContext) {
 		// Saves the file path of the file
 		let path = uri.fsPath;
 		let file_info = new ExtractionInfo(path);
-		file_info.load;
+
 		
 		//creates webview panel
 		const panel = vscode.window.createWebviewPanel('Info', path, vscode.ViewColumn.One,  {enableScripts: true});
@@ -46,11 +46,9 @@ export function activate(context: vscode.ExtensionContext) {
 				case 'extract':
 					logExtract(path);
 					extract_file_at_path(path);
-					file_info.load;
 					updateWebview(file_info.decompressedSize, file_info.extractedPath);
 					return;
 				case 'file':
-					file_info.load;
 					let uri = vscode.Uri.file(file_info.extractedPath);
 					vscode.commands.executeCommand('vscode.openFolder', uri, true);
 					return;
@@ -147,6 +145,7 @@ function getWebviewContent(size: number, path: string, eSize: number) {
 				}
 				function extract(){
 					var text = "Extracted File Size: "+${eSize}+" bytes";
+					vscode.postMessage({command: 'extract'})
 					document.getElementById("size").innerHTML = text;
 				}
 
