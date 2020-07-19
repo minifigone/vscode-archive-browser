@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-import {basename} from 'path';
+import * as pathlib from 'path';
 import {extract} from "./extension";
 
 /**
@@ -34,7 +34,7 @@ export class ExtractionInfo{
      */
     constructor(path: string){
         this.compressed_path = this.process_path(path);
-        this.filename = basename(path);
+        this.filename = pathlib.basename(path);
         this.filename = this.filename.split(".", 1).toString();
 
         //Get file size from provided path
@@ -201,7 +201,22 @@ export class ExtractionInfo{
         let data = "{\"compressed_path\":\"" + this.compressed_path + "\", \"extracted_path\":\"" + this.extracted_path + "\",\"size\":{\"compressed\":\"" + this.compressed_size 
         + "\",\"decompressed\":\"" + this.decompressed_size + "\"}}";
 
+        //TODO: Add JSON.stringify() to properly write to the file
+
         fs.writeFileSync(workspace_path, data);
+    }
+
+    //TODO: Finish code & document
+    public load(path: string): void{
+        if(!fs.existsSync(path)){
+            //Doesn't exist
+            vscode.window.showErrorMessage("File at " + path + " does not exist.");
+            return;
+        }
+
+        let rawdata = fs.readFileSync(pathlib.basename(path));
+        let data = JSON.parse(rawdata.toString());
+        
     }
 
 }
