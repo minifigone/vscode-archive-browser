@@ -232,7 +232,7 @@ export class ExtractionInfo{
                 compressed: this.compressed_size,
                 decompressed: this.decompressed_size
             }
-        }
+        };
         let data = JSON.stringify(jdata);
 
         fs.writeFileSync(workspace_path, data);
