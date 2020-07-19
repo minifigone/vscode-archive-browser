@@ -227,6 +227,7 @@ export class ExtractionInfo{
         let jdata = {
             compressed_path: this.compressedPath, 
             extracted_path: this.extracted_path,
+            file_count: this.file_count,
             size: {
                 compressed: this.compressed_size,
                 decompressed: this.decompressed_size
@@ -257,6 +258,7 @@ export class ExtractionInfo{
 
         this.compressed_path = data.compressed_path;
         this.extracted_path = data.extracted_path;
+        this.file_count = data.file_count;
         this.compressed_size = data.size.compressed;
         this.decompressed_size = data.size.decompressed;
     }
