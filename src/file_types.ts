@@ -85,10 +85,6 @@ export function extract_file_at_path(path: string) {
 	if (info) {
 		//connects temp directory in
 		vscode.workspace.updateWorkspaceFolders(vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders.length : 0, null, { uri: vscode.Uri.file(info.extractedPath)});
-		//TESTING
-		extract.info("I got here");
-		info.load("C:/Users/hurleyb5/Desktop/Brian/Classes/Senior_Project/Test_Data/.vscode/archive-browser/test.json");
-		//TESTING END
 	}
 }
 
