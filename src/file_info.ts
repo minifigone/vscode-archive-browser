@@ -111,7 +111,6 @@ export class ExtractionInfo{
      */
     set extractedPath(newPath: string){
         this.extracted_path = this.process_path(newPath);
-        // this.decompressed_size = this.get_file_size(this.extracted_path);
         this.generate_file();
     }
 
@@ -138,7 +137,7 @@ export class ExtractionInfo{
      * 
      */
     private process_path(path: string): string{
-        return path.replace(this.replace, "\\\\");
+        return path.replace(this.replace, "/");
     }
 
     /**
@@ -198,15 +197,27 @@ export class ExtractionInfo{
     private generate_file(){
         let workspace_path = this.check_directory() + "/" + this.filename + ".json";
 
-        let data = "{\"compressed_path\":\"" + this.compressed_path + "\", \"extracted_path\":\"" + this.extracted_path + "\",\"size\":{\"compressed\":\"" + this.compressed_size 
-        + "\",\"decompressed\":\"" + this.decompressed_size + "\"}}";
-
-        //TODO: Add JSON.stringify() to properly write to the file
+        let jdata = {
+            compressed_path: this.compressedPath, 
+            extracted_path: this.extracted_path,
+            size: {
+                compressed: this.compressed_size,
+                decompressed: this.decompressed_size
+            }
+        }
+        let data = JSON.stringify(jdata);
 
         fs.writeFileSync(workspace_path, data);
     }
 
-    //TODO: Finish code & document
+    /**
+     * Function Name: load()
+     * 
+     * @param path (String) Path to a .json file
+     * 
+     * Summary: Loads a .json file storing ExtractionInfo data into a new instance of ExtractionInfo.
+     * 
+     */
     public load(path: string): void{
         if(!fs.existsSync(path)){
             //Doesn't exist
@@ -214,9 +225,13 @@ export class ExtractionInfo{
             return;
         }
 
-        let rawdata = fs.readFileSync(pathlib.basename(path));
+        let rawdata = fs.readFileSync(path);
         let data = JSON.parse(rawdata.toString());
-        
+
+        this.compressed_path = data.compressed_path;
+        this.extracted_path = data.extracted_path;
+        this.compressed_size = data.size.compressed;
+        this.decompressed_size = data.size.decompressed;
     }
 
 }
