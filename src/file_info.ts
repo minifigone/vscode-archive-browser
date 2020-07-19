@@ -38,11 +38,16 @@ export class ExtractionInfo{
         this.filename = pathlib.basename(path);
         this.filename = this.filename.split(".", 1).toString();
 
-        //Get file size from provided path
-        this.compressed_size = this.get_file_size(this.compressed_path);
+        //Checking if a .json file already exists
+        let workspace_path = this.check_directory() + "/" + this.filename + ".json";
+        let ret = this.load(workspace_path);
+        if(ret==-1){
+            //Get file size from provided path
+            this.compressed_size = this.get_file_size(this.compressed_path);
 
-        //Save to file
-        this.generate_file();
+            //Save to file
+            this.generate_file();
+        }
     }
 
     //-----------------------------------------------------------------------------------
@@ -243,14 +248,15 @@ export class ExtractionInfo{
      * 
      * @param path (String) Path to a .json file
      * 
-     * Summary: Loads a .json file storing ExtractionInfo data into a new instance of ExtractionInfo.
+     * Summary: Loads a .json file storing ExtractionInfo data into a new instance of ExtractionInfo. Returns -1 if the
+     * path doesn't exist, 0 if it passes. 
      * 
      */
-    public load(path: string): void{
+    public load(path: string): number{
         if(!fs.existsSync(path)){
             //Doesn't exist
             vscode.window.showErrorMessage("File at " + path + " does not exist.");
-            return;
+            return -1;
         }
 
         let rawdata = fs.readFileSync(path);
@@ -261,6 +267,7 @@ export class ExtractionInfo{
         this.file_count = data.file_count;
         this.compressed_size = data.size.compressed;
         this.decompressed_size = data.size.decompressed;
+        return 0;
     }
 
 }
