@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import { extract_file_at_path } from './file_types';
 import {Category,CategoryLogger,CategoryServiceFactory,CategoryConfiguration,LogLevel} from "typescript-logging";
 import {ExtractionInfo} from './file_info';
+import * as pathlib from 'path';
 
 //changes the default output to INFO instead of ERR
 CategoryServiceFactory.setDefaultConfiguration(new CategoryConfiguration(LogLevel.Info));
@@ -28,11 +29,16 @@ export function activate(context: vscode.ExtensionContext) {
 		// Saves the file path of the file
 		let path = uri.fsPath;
 		let file_info = new ExtractionInfo(path);
+
 		
 		//creates webview panel
 		const panel = vscode.window.createWebviewPanel('Info', path, vscode.ViewColumn.One,  {enableScripts: true});
 
-		panel.webview.html = getWebviewContent(file_info.compressedSize, path);
+		const updateWebview = (size: number, link: string) => {
+			panel.webview.html = getWebviewContent(file_info.compressedSize, path, size);
+		};
+
+		updateWebview(file_info.decompressedSize, file_info.extractedPath);
 
 		//waits for a message from the HTML to extract the files
 		panel.webview.onDidReceiveMessage(
@@ -40,7 +46,12 @@ export function activate(context: vscode.ExtensionContext) {
 				switch (message.command) {
 				case 'extract':
 					logExtract(path);
+					panel.dispose();
 					extract_file_at_path(path);
+					return;
+				case 'file':
+					let uri = vscode.Uri.file(file_info.extractedPath);
+					vscode.commands.executeCommand('vscode.openFolder', uri, true);
 					return;
 				}
 			  }
@@ -97,7 +108,7 @@ export function logExtract(path: string) {
 //Webview controller. Creates the new webview pane.
 //If the the "Extract File" button is pressed, it sends a message back to info
 // to extract the file's contents. 
-function getWebviewContent(size: number, path: string) {
+function getWebviewContent(size: number, path: string, eSize: number) {
 	const tmp =  
 	`<html> 
 	<html lang="en">
@@ -116,13 +127,32 @@ function getWebviewContent(size: number, path: string) {
 		<body> 
 			<div style="font-size:24px">File Path: ${path}</div><br>
 			<div style="font-size:24px">Unextracted File Size: ${size} bytes</div><br>
-			
-			<button class="button button" onclick="extract()">Extract Files</button>
+			<div id="size" style="font-size:24px"></div><br>
+			<br>
+			<p>Running extract will close this Webview.</p>
+			<button class="button button" id="extract">Extract Files</button>
+			<br>
+			<div id="but"></div>
+
 			<script>
+			const vscode = acquireVsCodeApi();
+
+				if(${eSize}>0){
+					var text = "Extracted File Size: "+${eSize}+" bytes";
+					document.getElementById("size").innerHTML = text;
+					document.getElementById("but").innerHTML = '<button class="button button" id="location" onclick=file()>Open File In New Window</button>';
+				}
+				function file(){
+					vscode.postMessage({command: 'file'})
+				}
 				function extract(){
-					const vscode = acquireVsCodeApi();
+					var text = "Extracted File Size: "+${eSize}+" bytes";
 					vscode.postMessage({command: 'extract'})
 				}
+
+				
+				var ex = document.getElementById('extract');
+				ex.addEventListener('click', extract, false, false);
 			</script>
 		</body> 
 	</html> `;
