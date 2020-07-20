@@ -4,6 +4,7 @@ import * as pathlib from 'path';
 import * as tmp from '../temp_dir';
 import {decomp} from '../extension';
 import {ExtractionInfo} from '../file_info';
+let bzip2 = require('bzip2');
 
 // zip file header/record signatures.
 const local_header_signature: Buffer = Buffer.from([0x50, 0x4b, 0x03, 0x04]);
@@ -124,8 +125,27 @@ export function extract_zip(path: string): ExtractionInfo | null {
 				break;
 			}
 			case (CompressionMethod.BZIP2): {
-				// TODO: add BZIP2 decompression when it's added for general decompression.
-				decomp.warn(filename + " compressed with BZIP2 compression, which is not yet supported for ZIP");
+				var infl;
+				//Unzip the file
+				try{
+					let ret = bzip2.array(data);
+					infl = bzip2.simple(ret);
+				}
+				catch(err){
+					decomp.error("Error extracting", err);
+				}
+				if (infl) {
+                    if (uncompressed_size === 0 && filename.toString().charAt(filename.length - 1) === '/') {
+				        // if the file is zero size it's probably a directory, so make a directory.
+					    fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, {recursive: true});
+				    } else {
+					    if (!fs.existsSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + pathlib.parse(filename.toString()).dir)) {
+						    fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + pathlib.parse(filename.toString()).dir, {recursive: true});
+					    }
+					    // otherwise it was actually stored uncompressed.
+					    fs.writeFileSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, infl);
+				    }
+				}
 				break;
 			}
 			case (CompressionMethod.LZMA): {
