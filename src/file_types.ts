@@ -5,6 +5,7 @@ import {extract, decomp, dir} from "./extension";
 import {extract_zip} from './zip/zip';
 import {extract_gzip} from './gzip/gzip';
 import {extract_tar} from './tar/tar';
+import {extract_bzip2} from './bzip2/bzip2';
 
 // supported file extensions that handle archiving or archiving and compression.
 export enum ArchiveType {
@@ -29,7 +30,7 @@ export function extract_file_at_path(path: string) {
 	var info;
 
 	if (extension !== "") {
-		var new_path = ""; // TODO: make this an actual value in .bz2 below once decompression returns are known.
+		var new_path = "";
 
 		// handle compression only types first.
 		if ((<any>Object).values(CompressionType).includes(extension)) { // TypeScript -- this shouldn't be this ugly.
@@ -43,6 +44,10 @@ export function extract_file_at_path(path: string) {
 			} else if (extension === CompressionType.BZIP2) {
 				// .bz2
 				decomp.info("Decompressing " + extension + " file");
+				info = extract_bzip2(path);
+				if(info !== null){
+					new_path = info?.extractedPath;
+				}
 			}
 
 			extension = get_file_extension(new_path); // if we need to handle a tarball.
