@@ -1,9 +1,9 @@
 import * as fs from 'fs';
-import * as bzip2 from 'bzip2';
 import * as pathlib from 'path';
 import * as tmp from '../temp_dir';
 import {decomp} from '../extension';
 import {ExtractionInfo} from '../file_info';
+let bzip2 = require('bzip2');
 
 /**
  * Function Name: extract_bzip2()

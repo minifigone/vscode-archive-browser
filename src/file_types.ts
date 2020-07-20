@@ -30,7 +30,7 @@ export function extract_file_at_path(path: string) {
 	var info;
 
 	if (extension !== "") {
-		var new_path = ""; // TODO: make this an actual value in .bz2 below once decompression returns are known.
+		var new_path = "";
 
 		// handle compression only types first.
 		if ((<any>Object).values(CompressionType).includes(extension)) { // TypeScript -- this shouldn't be this ugly.
