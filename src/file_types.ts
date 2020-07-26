@@ -1,11 +1,15 @@
 import * as vscode from 'vscode';
 import * as pathlib from 'path';
+import * as fs from 'fs';
 import {ExtractionInfo} from "./file_info";
 import {extract, decomp, dir} from "./extension";
 import {extract_zip} from './zip/zip';
 import {extract_gzip} from './gzip/gzip';
 import {extract_tar} from './tar/tar';
 import {extract_bzip2} from './bzip2/bzip2';
+import {extract_lzma} from './lzma/lzma';
+import * as tmp from './temp_dir';
+var _7z = require('7zip-min');
 
 // supported file extensions that handle archiving or archiving and compression.
 export enum ArchiveType {
@@ -22,6 +26,7 @@ export enum ArchiveType {
 export enum CompressionType {
 	GZIP = ".gz",
 	BZIP2 = ".bz2",
+	LZMA = ".lzma",
 }
 
 // program flow controlled by file types.
@@ -46,6 +51,12 @@ export function extract_file_at_path(path: string) {
 				decomp.info("Decompressing " + extension + " file");
 				info = extract_bzip2(path);
 				if(info !== null){
+					new_path = info?.extractedPath;
+				}
+			} else if (extension === CompressionType.LZMA) {
+				decomp.info("Decompressing " + extension + " file");
+				info = extract_lzma(path);
+				if (info !== null) {
 					new_path = info?.extractedPath;
 				}
 			}
@@ -79,6 +90,18 @@ export function extract_file_at_path(path: string) {
 		} else if (extension === ArchiveType.SEVENZIP) {
 			// .7z
 			extract.info("Extracting " + extension + " file");
+
+			// doing 7zip in here because callbacks break literally everything when your architecture does not expect them.
+			_7z.unpack(path, tmp.create_temp_dir() + "/" + pathlib.parse(path).name, (err: any) => {
+				var info = new ExtractionInfo(path);
+				info.extractedPath = tmp.create_temp_dir() + "/" + pathlib.parse(path).name;
+				vscode.workspace.updateWorkspaceFolders(vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders.length : 0, null, { uri: vscode.Uri.file(info.extractedPath)});
+			});
+
+			_7z.list(path, (err: any, result: any) => {
+				info = new ExtractionInfo(path);
+				info.fileCount = result.length;
+			});
 		} else {
 			extract.warn("File type " + extension + " is not supported");
 		}
