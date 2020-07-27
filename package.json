@@ -2,7 +2,7 @@
 	"name": "archive-browser",
 	"displayName": "Archive Browser",
 	"description": "Browser archive files in VS Code",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"publisher": "minifigone",
 	"repository": "https://github.com/minifigone/vscode-archive-browser",
 	"engines": {
@@ -67,6 +67,9 @@
 		"vscode-test": "^1.3.0"
 	},
 	"dependencies": {
+		"7zip-min": "^1.1.2",
+		"bzip2": "^0.1.1",
+		"lzma": "^2.3.2",
 		"os": "^0.1.1",
 		"typescript-logging": "^0.6.4"
 	}

@@ -2,6 +2,13 @@
 
 All notable changes to the "archive-browser" extension will be documented in this file.
 
+## 0.2.0 2020-07-22
+
+- Added decompression for BZIP2
+  - Includes BZIP2 decompression for ZIP-like archives
+  - Includes BZIP2 decompression for tarballs (.tar.bz2)
+- Completed file information page
+
 ## 0.1.0 2020-07-15
 
 Initial (pre-)release!
