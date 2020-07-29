@@ -18,11 +18,8 @@ Please see the Contributing section for more information.
 - Decompress BZIP2-compressed files (.bz2)
 - Handles tarballs (.tar.gz, .tar.gz2)
 - Page with information on archived or compressed files for both before and after extraction
-
-## Features Forthcoming in 1.0.0 (or Sooner Pre-releases)
-
 - Extract 7Zip archives (.7z)
-- Decompress LZMA-compressed files (.lz)
+- Decompress LZMA-compressed files (.lzma)
 
 ## Contributing
 
@@ -36,5 +33,5 @@ This project is being developed by a group of students at Wentworth Institute of
 This group is:
 
 - Tom Castle [@minifigone](https://github.com/minifigone)
-- Scott Duncan [@duncans1atwit](https://github.com/duncans1atwit)
+- Scott Duncan [@Majerscott](https://github.com/Majerscott)
 - Brian Hurley [@Zippoman924](https://github.com/Zippoman924)
