@@ -33,5 +33,5 @@ This project is being developed by a group of students at Wentworth Institute of
 This group is:
 
 - Tom Castle [@minifigone](https://github.com/minifigone)
-- Scott Duncan [@duncans1atwit](https://github.com/duncans1atwit)
+- Scott Duncan [@Majerscott](https://github.com/Majerscott)
 - Brian Hurley [@Zippoman924](https://github.com/Zippoman924)
