@@ -2,6 +2,12 @@
 
 All notable changes to the "archive-browser" extension will be documented in this file.
 
+## 0.3.0 2020-07-29
+
+- Added extraction for 7ZIP (.7z)
+- Added decompression for LZMA (.lzma)
+- Added icon
+
 ## 0.2.0 2020-07-22
 
 - Added decompression for BZIP2

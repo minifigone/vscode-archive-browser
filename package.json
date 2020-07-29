@@ -2,9 +2,10 @@
 	"name": "archive-browser",
 	"displayName": "Archive Browser",
 	"description": "Browser archive files in VS Code",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"publisher": "minifigone",
 	"repository": "https://github.com/minifigone/vscode-archive-browser",
+	"icon": "Images/Icon-box.png",
 	"engines": {
 		"vscode": "^1.45.0"
 	},
