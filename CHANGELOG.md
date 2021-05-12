@@ -2,6 +2,11 @@
 
 All notable changes to the "archive-browser" extension will be documented in this file.
 
+## 0.3.2 2021-05-11
+
+- Updating dependency versions
+- Update readme
+
 ## 0.3.1 2020-07-29
 
 - Updating readme with forgotten things from 0.3.0

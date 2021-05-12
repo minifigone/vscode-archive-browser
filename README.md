@@ -23,9 +23,7 @@ Please see the Contributing section for more information.
 
 ## Contributing
 
-Because this is starting as school project (see the following section), we will not be accepting pull requests until September 2020, after the end of the course.
-In September, the repository will be updated with information about contributing code.
-Right now, the best way to contribute is to use the extension, and open issues with problems you encounter or features you want to see.
+Issues or PRs welcome, but response time might be a bit slow.
 
 ## A Note About This Project
 
