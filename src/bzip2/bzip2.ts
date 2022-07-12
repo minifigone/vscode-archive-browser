@@ -3,6 +3,7 @@ import * as pathlib from 'path';
 import * as tmp from '../temp_dir';
 import {decomp} from '../extension';
 import {ExtractionInfo} from '../file_info';
+import { ErrorType } from 'typescript-logging';
 let bzip2 = require('bzip2');
 
 /**
@@ -39,7 +40,7 @@ export function extract_bzip2(path: string){
 		infl = bzip2.simple(ret);
 	}
 	catch(err){
-		decomp.error("Error extracting", err);
+		decomp.error("Error extracting", err as ErrorType);
 	}
 
 	//Write unzipped buffer to a file

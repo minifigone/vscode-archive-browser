@@ -3,6 +3,7 @@ import * as pathlib from 'path';
 import * as tmp from '../temp_dir';
 import {decomp} from '../extension';
 import {ExtractionInfo} from '../file_info';
+import { ErrorType } from 'typescript-logging';
 let lzma = require('lzma');
 
 //Declare stuff here
@@ -31,7 +32,7 @@ export function extract_lzma(path: string): ExtractionInfo | null {
 		infl = lzma.decompress(archive_file);
 	}
 	catch(err){
-		decomp.error("Error extracting", err);
+		decomp.error("Error extracting", err as ErrorType);
 	}
 
 	//Write unzipped buffer to a file

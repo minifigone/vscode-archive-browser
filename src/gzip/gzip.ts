@@ -4,6 +4,7 @@ import * as pathlib from 'path';
 import * as tmp from '../temp_dir';
 import {decomp} from '../extension';
 import {ExtractionInfo} from '../file_info';
+import { ErrorType } from 'typescript-logging';
 
 /**
  * Function Name: extract_gzip()
@@ -39,7 +40,7 @@ export function extract_gzip(path: string){
 		infl = gunzipSync(archive_file);
 	}
 	catch(err){
-		decomp.error("Error extracting", err);
+		decomp.error("Error extracting", err as ErrorType);
 	}
 
 	//Write unzipped buffer to a file

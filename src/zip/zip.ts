@@ -4,6 +4,7 @@ import * as pathlib from 'path';
 import * as tmp from '../temp_dir';
 import {decomp} from '../extension';
 import {ExtractionInfo} from '../file_info';
+import { ErrorType } from 'typescript-logging';
 let bzip2 = require('bzip2');
 
 // zip file header/record signatures.
@@ -107,7 +108,7 @@ export function extract_zip(path: string): ExtractionInfo | null {
 					try {
 						infl = inflateRawSync(data);
 					} catch (err) {
-						decomp.error("Error extracting " + filename + "from " + path, err);
+						decomp.error("Error extracting " + filename + "from " + path, err as ErrorType);
 					}
 				}
 				if (infl) {
@@ -132,7 +133,7 @@ export function extract_zip(path: string): ExtractionInfo | null {
 					infl = bzip2.simple(ret);
 				}
 				catch(err){
-					decomp.error("Error extracting", err);
+					decomp.error("Error extracting", err as ErrorType);
 				}
 				if (infl) {
 					if (uncompressed_size === 0 && filename.toString().charAt(filename.length - 1) === '/') {
