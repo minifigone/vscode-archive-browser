@@ -111,16 +111,16 @@ export function extract_zip(path: string): ExtractionInfo | null {
 					}
 				}
 				if (infl) {
-                    if (uncompressed_size === 0 && filename.toString().charAt(filename.length - 1) === '/') {
-				        // if the file is zero size it's probably a directory, so make a directory.
-					    fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, {recursive: true});
-				    } else {
-					    if (!fs.existsSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + pathlib.parse(filename.toString()).dir)) {
-						    fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + pathlib.parse(filename.toString()).dir, {recursive: true});
-					    }
-					    // otherwise it was actually stored uncompressed.
-					    fs.writeFileSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, infl);
-				    }
+					if (uncompressed_size === 0 && filename.toString().charAt(filename.length - 1) === '/') {
+						// if the file is zero size it's probably a directory, so make a directory.
+						fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, {recursive: true});
+					} else {
+						if (!fs.existsSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + pathlib.parse(filename.toString()).dir)) {
+							fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + pathlib.parse(filename.toString()).dir, {recursive: true});
+						}
+						// otherwise it was actually stored uncompressed.
+						fs.writeFileSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, infl);
+					}
 				}
 				break;
 			}
@@ -135,16 +135,16 @@ export function extract_zip(path: string): ExtractionInfo | null {
 					decomp.error("Error extracting", err);
 				}
 				if (infl) {
-                    if (uncompressed_size === 0 && filename.toString().charAt(filename.length - 1) === '/') {
-				        // if the file is zero size it's probably a directory, so make a directory.
-					    fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, {recursive: true});
-				    } else {
-					    if (!fs.existsSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + pathlib.parse(filename.toString()).dir)) {
-						    fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + pathlib.parse(filename.toString()).dir, {recursive: true});
-					    }
-					    // otherwise it was actually stored uncompressed.
-					    fs.writeFileSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, infl);
-				    }
+					if (uncompressed_size === 0 && filename.toString().charAt(filename.length - 1) === '/') {
+						// if the file is zero size it's probably a directory, so make a directory.
+						fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, {recursive: true});
+					} else {
+						if (!fs.existsSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + pathlib.parse(filename.toString()).dir)) {
+							fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + pathlib.parse(filename.toString()).dir, {recursive: true});
+						}
+						// otherwise it was actually stored uncompressed.
+						fs.writeFileSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, infl);
+					}
 				}
 				break;
 			}
