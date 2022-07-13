@@ -1,9 +1,9 @@
 import * as fs from 'fs';
-import {inflateSync, inflateRawSync} from 'zlib';
+import { inflateSync, inflateRawSync } from 'zlib';
 import * as pathlib from 'path';
 import * as tmp from '../temp_dir';
-import {decomp} from '../extension';
-import {ExtractionInfo} from '../file_info';
+import { decomp } from '../extension';
+import { ContentsInfo, EntryInfo, ExtractionInfo } from '../file_info';
 import { ErrorType } from 'typescript-logging';
 let bzip2 = require('bzip2');
 
@@ -90,10 +90,10 @@ export function extract_zip(path: string): ExtractionInfo | null {
 			case (CompressionMethod.STORE): {
 				if (uncompressed_size === 0 && filename.toString().charAt(filename.length - 1) === '/') {
 					// if the file is zero size it's probably a directory, so make a directory.
-					fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, {recursive: true});
+					fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, { recursive: true });
 				} else {
 					if (!fs.existsSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + pathlib.parse(filename.toString()).dir)) {
-						fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + pathlib.parse(filename.toString()).dir, {recursive: true});
+						fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + pathlib.parse(filename.toString()).dir, { recursive: true });
 					}
 					// otherwise it was actually stored uncompressed.
 					fs.writeFileSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, data);
@@ -114,10 +114,10 @@ export function extract_zip(path: string): ExtractionInfo | null {
 				if (infl) {
 					if (uncompressed_size === 0 && filename.toString().charAt(filename.length - 1) === '/') {
 						// if the file is zero size it's probably a directory, so make a directory.
-						fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, {recursive: true});
+						fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, { recursive: true });
 					} else {
 						if (!fs.existsSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + pathlib.parse(filename.toString()).dir)) {
-							fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + pathlib.parse(filename.toString()).dir, {recursive: true});
+							fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + pathlib.parse(filename.toString()).dir, { recursive: true });
 						}
 						// otherwise it was actually stored uncompressed.
 						fs.writeFileSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, infl);
@@ -128,20 +128,20 @@ export function extract_zip(path: string): ExtractionInfo | null {
 			case (CompressionMethod.BZIP2): {
 				var infl;
 				//Unzip the file
-				try{
+				try {
 					let ret = bzip2.array(data);
 					infl = bzip2.simple(ret);
 				}
-				catch(err){
+				catch (err) {
 					decomp.error("Error extracting", err as ErrorType);
 				}
 				if (infl) {
 					if (uncompressed_size === 0 && filename.toString().charAt(filename.length - 1) === '/') {
 						// if the file is zero size it's probably a directory, so make a directory.
-						fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, {recursive: true});
+						fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, { recursive: true });
 					} else {
 						if (!fs.existsSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + pathlib.parse(filename.toString()).dir)) {
-							fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + pathlib.parse(filename.toString()).dir, {recursive: true});
+							fs.mkdirSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + pathlib.parse(filename.toString()).dir, { recursive: true });
 						}
 						// otherwise it was actually stored uncompressed.
 						fs.writeFileSync(tmp.create_temp_dir() + "/" + path_object.name + "/" + filename, infl);
@@ -168,6 +168,102 @@ export function extract_zip(path: string): ExtractionInfo | null {
 	info.decompressedSize = total_expanded_size;
 
 	return info;
+}
+
+export function zip_contents(path: string): ZipContentsInfo | null {
+	var archive_file: Buffer;
+
+	if (fs.existsSync(path)) {
+		archive_file = fs.readFileSync(path);
+	} else {
+		decomp.warn("Provided path does not exist: " + path);
+		return null;
+	}
+
+	var total_expanded_size = 0;
+
+	// find the end-of-central-directory record.
+	// have to use a loop method here because the comment length is not static.
+	var end_of_central_directory;
+	var i = archive_file.byteLength;
+	while (true) {
+		var next_four = archive_file.slice(i - 4, i);
+		if (next_four.equals(central_dir_end_signature)) {
+			end_of_central_directory = archive_file.slice(i - 4, archive_file.byteLength);
+			break;
+		}
+		i--;
+	}
+
+	let num_cd_records = array_to_int(end_of_central_directory.slice(10, 12)); // not handling multiple-part zips.
+	let cd_size = array_to_int(end_of_central_directory.slice(12, 16));
+	let cd_start = array_to_int(end_of_central_directory.slice(16, 20));
+
+	var central_directory = archive_file.slice(cd_start, cd_start + cd_size);
+
+	var contents_list: Array<ZipEntryInfo> = [];
+
+	// iterate over cd records.
+	var cd_offset = 0;
+	for (var i = 0; i < num_cd_records; i++) {
+		// there are some magic numbers around these parts. idk if we should make constants for every possible offset.
+		// looking at the cd record info.
+		var cdfh_file_name_length = array_to_int(central_directory.slice(cd_offset + 28, cd_offset + 30));
+		var cdfh_extra_field_length = array_to_int(central_directory.slice(cd_offset + 30, cd_offset + 32));
+		var cdfh_file_comment_length = array_to_int(central_directory.slice(cd_offset + 32, cd_offset + 34));
+		var cdfh_length = 46 + cdfh_file_name_length + cdfh_extra_field_length + cdfh_file_comment_length;
+		var cd_file_header = central_directory.slice(cd_offset, cd_offset + cdfh_length);
+
+		var compression_method = array_to_int(cd_file_header.slice(10, 12));
+		var compressed_size = array_to_int(cd_file_header.slice(20, 24));
+		var uncompressed_size = array_to_int(cd_file_header.slice(24, 28));
+		total_expanded_size += uncompressed_size;
+		var lfh_offset = array_to_int(cd_file_header.slice(42, 46));
+
+		// looking at the local record info.
+		var lfh_file_name_length = array_to_int(archive_file.slice(lfh_offset + 26, lfh_offset + 28));
+		var lfh_extra_field_length = array_to_int(archive_file.slice(lfh_offset + 28, lfh_offset + 30));
+		var lfh_length = 30 + lfh_file_name_length + lfh_extra_field_length;
+		var filename = archive_file.slice(lfh_offset + 30, lfh_offset + 30 + lfh_file_name_length);
+
+		var data = archive_file.slice(lfh_offset + lfh_length, lfh_offset + lfh_length + compressed_size);
+		
+		contents_list.push(
+			new ZipEntryInfo(filename.toString(), compression_method, compressed_size, uncompressed_size)
+		)
+
+		cd_offset += cdfh_length;
+	}
+
+	return new ZipContentsInfo(path.split("/")[-1], archive_file.byteLength, total_expanded_size, contents_list)
+}
+
+export class ZipContentsInfo implements ContentsInfo {
+	public filename: string = "";
+	public compressed_size: number = -1;
+	public total_uncompressed_size: number = -1;
+	public contents: Array<ZipEntryInfo> = []
+
+	constructor(name: string, compressed_size: number, uncompressed_size: number, contents: Array<ZipEntryInfo>) {
+		this.filename = name;
+		this.compressed_size = compressed_size;
+		this.total_uncompressed_size = uncompressed_size;
+		this.contents = contents;
+	}
+}
+
+export class ZipEntryInfo implements EntryInfo {
+	public filename: string = "";
+	public compression_method: CompressionMethod = CompressionMethod.STORE;
+	public compressed_size: number = -1;
+	public uncompressed_size: number = -1;
+
+	constructor(filename: string, compression_method: CompressionMethod, compressed_size: number, uncompressed_size: number) {
+		this.filename = filename;
+		this.compression_method = compression_method;
+		this.compressed_size = compressed_size;
+		this.uncompressed_size = uncompressed_size;
+	}
 }
 
 // convert a little-endian-byte-order array to an int.
