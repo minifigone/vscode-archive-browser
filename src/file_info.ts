@@ -270,3 +270,15 @@ export class ExtractionInfo{
 	}
 
 }
+
+export interface EntryInfo {
+	filename: string;
+	uncompressed_size: number;
+}
+
+export interface ContentsInfo {
+	filename: string;
+	compressed_size: number;
+	total_uncompressed_size: number;
+	contents: Array<EntryInfo>;
+}
